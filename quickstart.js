@@ -12,32 +12,52 @@
 // limitations under the License.
 
 'use strict';
-
-const {google} = require('googleapis');
+const express = require('express');
+const bodyParser = require('body-parser');
+const router = express.Router();
+const {
+    google
+} = require('googleapis');
 const sampleClient = require('./sampleclient');
+const jsonParser = bodyParser.json();
 
-// initialize the Youtube API library
-const youtube = google.youtube({
-  version: 'v3',
-  auth: sampleClient.oAuth2Client,
+router.use(function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  next();
+})
+
+router.post('/', jsonParser, function(req, res) {
+    let thumbnails = []
+    // initialize the Youtube API library
+    const query = req.body
+    // const scopes = ['https://www.googleapis.com/auth/youtube'];
+
+    sampleClient.authenticate()
+        .then(authe => {
+            const youtube = google.youtube({
+                version: 'v3',
+                auth: sampleClient.oAuth2Client,
+            });
+            youtube.search.list({
+                part: 'id,snippet',
+                q: query,
+                maxResults: 50
+            }).then(response => {
+                response.data.items.forEach(item => {
+                    // console.log(item.snippet.thumbnails.default.url)
+                    thumbnails.push(item.snippet.thumbnails.default.url)
+                })
+            }).then(next => {
+                res.data = thumbnails
+                console.log("RESPONSE", res.data)
+                res.send(thumbnails)
+            }).catch(err => {
+                console.log(err)
+            })
+        })
+        .catch(err => console.log(err))
+
+
 });
-
-// a very simple example of searching for youtube videos
-async function runSample() {
-  const res = await youtube.search.list({
-    part: 'id,snippet',
-    q: 'Cats',
-    maxResults: 50
-  });
-  res.data.items.forEach(item => {
-      console.log(item.snippet.thumbnails.default.url)
-  })
-  // console.log(res.data);
-}
-
-const scopes = ['https://www.googleapis.com/auth/youtube'];
-
-sampleClient
-  .authenticate(scopes)
-  .then(runSample)
-  .catch(console.error);
+module.exports = router;

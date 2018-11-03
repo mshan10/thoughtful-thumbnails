@@ -46,6 +46,7 @@ your keyfile, and add a 'redirect_uris' section.  For example:
 
 class SampleClient {
   constructor(options) {
+
     this._options = options || {scopes: []};
 
     // validate the redirectUri.  This is a frequent cause of confusion.
@@ -81,11 +82,12 @@ class SampleClient {
       // grab the url that will be used for authorization
       this.authorizeUrl = this.oAuth2Client.generateAuthUrl({
         access_type: 'offline',
-        scope: scopes.join(' '),
+        scope: 'https://www.googleapis.com/auth/youtube',
       });
       const server = http
         .createServer(async (req, res) => {
           try {
+              console.log("creating server")
             if (req.url.indexOf('/oauth2callback') > -1) {
               const qs = querystring.parse(url.parse(req.url).query);
               res.end(
@@ -105,7 +107,7 @@ class SampleClient {
           opn(this.authorizeUrl, {wait: false}).then(cp => cp.unref());
         });
       destroyer(server);
-    });
+  }).catch(error => console.log("error", error));
   }
 }
 
