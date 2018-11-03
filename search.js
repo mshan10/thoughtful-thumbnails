@@ -26,9 +26,9 @@ router.use(function(req, res, next) {
   next();
 })
 
-router.get('/:query', jsonParser, function(req, res) {
+router.post('/', jsonParser, function(req, res) {
     let thumbnails = []
-    const query = req.params.query
+    const query = req.body
     fs.readFile('oauth2.keys.json', function processClientSecrets(err, content) {
         if (err) {
             console.log('Error loading client secret file: ' + err);
@@ -38,7 +38,7 @@ router.get('/:query', jsonParser, function(req, res) {
         //See full code sample for authorize() function code.
         authorize(JSON.parse(content), {
             'params': {
-                'maxResults': '50',
+                'maxResults': '10',
                 'part': 'snippet',
                 'q': query,
                 'type': ''
