@@ -1,6 +1,6 @@
 var express = require('express');
 
-var quickstart = require('./quickstart');
+var search = require('./search');
 
 var allowInsecureHTTP = false
 var trustProxy = true;
@@ -11,9 +11,9 @@ app.get('/', function(req, res) {
   res.status(200).send('Test.');
 });
 
-app.use('/quickstart', quickstart);
+app.use('/search', search);
 
-var port = process.env.PORT || 3001;
+var port = process.env.PORT || 4000;
 
 var httpServer = require('http').createServer(app);
 
