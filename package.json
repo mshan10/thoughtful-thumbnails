@@ -1,0 +1,18 @@
+{
+  "name": "atthack",
+  "version": "1.0.0",
+  "description": "return youtube thumbnail urls",
+  "main": "quickstart.js",
+  "dependencies": {
+    "google-auth-library": "^2.0.1",
+    "googleapis": "^34.0.0",
+    "opn": "^5.4.0",
+    "server-destroy": "^1.0.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "start"
+  },
+  "author": "",
+  "license": "ISC"
+}
