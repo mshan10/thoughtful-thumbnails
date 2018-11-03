@@ -26,9 +26,9 @@ router.use(function(req, res, next) {
   next();
 })
 
-router.post('/', jsonParser, function(req, res) {
+router.get('/:query', jsonParser, function(req, res) {
     let thumbnails = []
-    const query = req.body
+    const query = req.params.query
     fs.readFile('oauth2.keys.json', function processClientSecrets(err, content) {
         if (err) {
             console.log('Error loading client secret file: ' + err);
